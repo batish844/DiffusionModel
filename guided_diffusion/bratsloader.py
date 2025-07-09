@@ -48,8 +48,13 @@ class BRATSDataset(torch.utils.data.Dataset):
                 datapoint = dict()
                 # extract all files as channels
                 for f in files:
-                    # Changed to handle .nii extension by splitting it off
-                    seqtype = f.split('_')[3].split('.')[0]
+                    # strip off “.nii” or “.nii.gz” reliably
+                    basename = os.path.splitext(f)[0]
+                    # grab whatever comes after the last underscore
+                    seqtype  = basename.rsplit('_', 1)[-1]
+                    # only keep the modalities you expect
+                    if seqtype not in self.seqtypes_set:
+                        continue
                     datapoint[seqtype] = os.path.join(root, f)
                 assert set(datapoint.keys()) == self.seqtypes_set, \
                     f'datapoint is incomplete, keys are {datapoint.keys()}'
@@ -127,7 +132,13 @@ class BRATSDataset3D(torch.utils.data.Dataset):
                 datapoint = dict()
                 # extract all files as channels
                 for f in files:
-                    seqtype = f.split('_')[3].split('.')[0]
+                # strip off “.nii” or “.nii.gz” reliably
+                    basename = os.path.splitext(f)[0]
+                    # grab whatever comes after the last underscore
+                    seqtype  = basename.rsplit('_', 1)[-1]
+                    # only keep the modalities you expect
+                    if seqtype not in self.seqtypes_set:
+                        continue
                     datapoint[seqtype] = os.path.join(root, f)
                 assert set(datapoint.keys()) == self.seqtypes_set, \
                     f'datapoint is incomplete, keys are {datapoint.keys()}'
