@@ -18,7 +18,7 @@ import torch as th
 from pathlib import Path
 from guided_diffusion.train_util import TrainLoop
 from visdom import Visdom
-viz = Visdom(port=8850)
+# viz = Visdom(port=8850)
 import torchvision.transforms as transforms
 
 def main():

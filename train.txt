@@ -148,7 +148,6 @@ BraTS20_Training_085
 BraTS20_Training_009
 BraTS20_Training_265
 BraTS20_Training_176
-BraTS20_Training_355
 BraTS20_Training_019
 BraTS20_Training_002
 BraTS20_Training_258
