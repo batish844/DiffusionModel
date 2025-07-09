@@ -8,16 +8,21 @@ import torchvision.utils as vutils
 
 
 class BRATSDataset(torch.utils.data.Dataset):
-    def __init__(self, directory, transform, test_flag=False):
-        patient_ids_to_load = None
-        if directory.lower().endswith('.txt') and os.path.isfile(directory):
-            txt_path = os.path.expanduser(directory)
-            with open(txt_path, 'r') as f:
-                patient_ids_to_load = {line.strip() for line in f if line.strip()}
-            search_directory = os.path.dirname(txt_path)
-        else:
-            search_directory = os.path.expanduser(directory)
+    def __init__(self, transform, test_flag=False):
+        # --- Hard-coded paths added ---
+        DATA_ROOT = (
+            "/kaggle/input/brats20-dataset-training-validation/"
+            "BraTS2020_TrainingData/"
+            "MICCAI_BraTS2020_TrainingData"
+        )
+        IDS_TXT = "/kaggle/working/DiffusionModel/train.txt"
+
+        with open(IDS_TXT, "r") as f:
+            patient_ids_to_load = {line.strip() for line in f if line.strip()}
         
+        search_directory = DATA_ROOT
+        # --- End of added section ---
+
         super().__init__()
         self.directory = search_directory
         self.transform = transform
@@ -33,22 +38,18 @@ class BRATSDataset(torch.utils.data.Dataset):
         for root, dirs, files in os.walk(self.directory):
             # if there are no subdirs, we have data
             if not dirs:
-                # --- Start of Changes ---
                 # If a list of IDs was loaded, filter the folders by name
                 if patient_ids_to_load is not None:
                     folder_name = os.path.basename(root)
                     if folder_name not in patient_ids_to_load:
                         continue # Skip this folder if its name is not in the list
-                # --- End of Changes ---
 
                 files.sort()
                 datapoint = dict()
                 # extract all files as channels
                 for f in files:
-                    # --- Start of Changes ---
                     # Changed to handle .nii extension by splitting it off
                     seqtype = f.split('_')[3].split('.')[0]
-                    # --- End of Changes ---
                     datapoint[seqtype] = os.path.join(root, f)
                 assert set(datapoint.keys()) == self.seqtypes_set, \
                     f'datapoint is incomplete, keys are {datapoint.keys()}'
@@ -86,22 +87,20 @@ class BRATSDataset(torch.utils.data.Dataset):
         return len(self.database)
 
 class BRATSDataset3D(torch.utils.data.Dataset):
-    def __init__(self, directory, transform, test_flag=False):
+    def __init__(self, transform, test_flag=False):
+        # --- Hard-coded paths added ---
+        DATA_ROOT = (
+            "/kaggle/input/brats20-dataset-training-validation/"
+            "BraTS2020_TrainingData/"
+            "MICCAI_BraTS2020_TrainingData"
+        )
+        IDS_TXT = "/kaggle/working/DiffusionModel/train.txt"
 
-        # --- Start of Changes ---
-        patient_ids_to_load = None
-        # Check if 'directory' is a path to a .txt file
-        if directory.lower().endswith('.txt') and os.path.isfile(directory):
-            txt_path = os.path.expanduser(directory)
-            with open(txt_path, 'r') as f:
-                # Load patient IDs into a set for efficient lookup
-                patient_ids_to_load = {line.strip() for line in f if line.strip()}
-            # The new directory to search is the one containing the .txt file
-            search_directory = os.path.dirname(txt_path)
-        else:
-            # Otherwise, the directory is the search directory itself
-            search_directory = os.path.expanduser(directory)
-        # --- End of Changes ---
+        with open(IDS_TXT, "r") as f:
+            patient_ids_to_load = {line.strip() for line in f if line.strip()}
+        
+        search_directory = DATA_ROOT
+        # --- End of added section ---
 
         super().__init__()
         self.directory = search_directory
@@ -118,13 +117,11 @@ class BRATSDataset3D(torch.utils.data.Dataset):
         for root, dirs, files in os.walk(self.directory):
             # if there are no subdirs, we have data
             if not dirs:
-                # --- Start of Changes ---
                 # If a list of IDs was loaded, filter the folders by name
                 if patient_ids_to_load is not None:
                     folder_name = os.path.basename(root)
                     if folder_name not in patient_ids_to_load:
                         continue # Skip this folder if its name is not in the list
-                # --- End of Changes ---
                 
                 files.sort()
                 datapoint = dict()
@@ -148,8 +145,6 @@ class BRATSDataset3D(torch.utils.data.Dataset):
             nib_img = nibabel.load(filedict[seqtype])
             path=filedict[seqtype]
             o = torch.tensor(nib_img.get_fdata())[:,:,slice]
-            # if seqtype != 'seg':
-            #     o = o / o.max()
             out.append(o)
         out = torch.stack(out)
         if self.test_flag:
