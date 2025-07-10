@@ -57,7 +57,7 @@ def main():
         tran_list = [transforms.Resize((args.image_size,args.image_size)),]
         transform_test = transforms.Compose(tran_list)
 
-        ds = BRATSDataset3D(args.data_dir,transform_test)
+        ds = BRATSDataset3D(transform_test)
         args.in_ch = 5
     else:
         tran_list = [transforms.Resize((args.image_size,args.image_size)), transforms.ToTensor()]
@@ -176,12 +176,12 @@ def main():
 def create_argparser():
     defaults = dict(
         data_name = 'BRATS',
-        data_dir="../dataset/brats2020/testing",
+        data_dir="MICCAI_BraTS2020_TrainingData",
         clip_denoised=True,
         num_samples=1,
         batch_size=1,
         use_ddim=False,
-        model_path="",         #path to pretrain model
+        model_path="emasavedmodel_0.9999_020000.pt",         #path to pretrain model
         num_ensemble=5,      #number of samples in the ensemble
         gpu_dev = "0",
         out_dir='./results/',
