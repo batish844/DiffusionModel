@@ -11,9 +11,9 @@ class BRATSDataset(torch.utils.data.Dataset):
     def __init__(self, transform, test_flag=False):
         # --- Hard-coded paths added ---
         DATA_ROOT = ( 
-                       "MICCAI_BraTS2020_TrainingData"
+                       "/content/drive/MyDrive/KaggleDatasets/3Dbrats20/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData"
         )
-        IDS_TXT = "test.txt"
+        IDS_TXT = "/content/drive/MyDrive/diffusionModel/test.txt"
 
         with open(IDS_TXT, "r") as f:
             patient_ids_to_load = {line.strip() for line in f if line.strip()}
@@ -93,9 +93,9 @@ class BRATSDataset3D(torch.utils.data.Dataset):
     def __init__(self, transform, test_flag=False):
         # --- Hard-coded paths added ---
         DATA_ROOT = ( 
-                       "MICCAI_BraTS2020_TrainingData"
+                       "/content/drive/MyDrive/KaggleDatasets/3Dbrats20/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData"
         )
-        IDS_TXT = "test.txt"
+        IDS_TXT = "/content/drive/MyDrive/diffusionModel/test.txt"
 
         with open(IDS_TXT, "r") as f:
             patient_ids_to_load = {line.strip() for line in f if line.strip()}

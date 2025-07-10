@@ -181,7 +181,7 @@ def create_argparser():
         num_samples=1,
         batch_size=1,
         use_ddim=False,
-        model_path="emasavedmodel_0.9999_020000.pt",         #path to pretrain model
+        model_path="/content/drive/MyDrive/diffusionModel/emasavedmodel_0.999_020000.pt",         #path to pretrain model
         num_ensemble=5,      #number of samples in the ensemble
         gpu_dev = "0",
         out_dir='./results/',
